@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Interview</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Background -->
+    <div id="background"></div>
+
+    <!-- Title Screen -->
+    <div id="titleScreen">
+
+        <h1 id="gameTitle">THE INTERVIEW</h1>
+
+        <p id="subtitle">
+            Some questions have no right answer.
+        </p>
+
+        <button id="startBtn">
+            Begin
+        </button>
+
+    </div>
+
+    <!-- Main Game -->
+    <div id="game" class="hidden">
+
+        <!-- Interview Room -->
+
+        <div id="room">
+
+            <div id="clock">
+                9:00 AM
+            </div>
+
+            <div id="light"></div>
+
+            <div id="window"></div>
+
+            <div id="table"></div>
+
+            <div id="chairPlayer"></div>
+
+            <div id="chairInterviewer"></div>
+
+        </div>
+
+        <!-- Dialogue -->
+
+        <div id="dialogueBox">
+
+            <div id="speaker">
+                Interviewer
+            </div>
+
+            <div id="dialogue">
+
+                ...
+
+            </div>
+
+        </div>
+
+        <!-- Choices -->
+
+        <div id="choices">
+
+        </div>
+
+    </div>
+
+    <!-- Fade -->
+    <div id="fade"></div>
+
+    <!-- Scripts -->
+
+    <script src="questions.js"></script>
+    <script src="endings.js"></script>
+    <script src="game.js"></script>
+
+</body>
+</html>
