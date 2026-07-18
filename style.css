@@ -425,3 +425,70 @@ button:hover{
     100%{opacity:1;}
 
 }
+/* ===========================
+ROOM CHANGES
+=========================== */
+
+#portrait{
+
+    position:absolute;
+
+    top:130px;
+
+    left:120px;
+
+    width:110px;
+
+    height:140px;
+
+    border:2px solid rgba(255,255,255,.08);
+
+    opacity:.8;
+
+    transition:2s;
+
+}
+
+#recorder{
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:255px;
+
+    transform:translateX(-50%);
+
+    width:120px;
+
+    height:32px;
+
+    background:#111;
+
+    border:1px solid #333;
+
+    transition:2s;
+
+}
+
+#shadow{
+
+    position:absolute;
+
+    inset:0;
+
+    background:black;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:3s;
+
+}
+
+.fastFlicker{
+
+    animation:flicker .35s infinite;
+
+}
