@@ -3,7 +3,10 @@
 // GAME
 // =====================================
 
-// Elements
+// ==========================
+// ELEMENTS
+// ==========================
+
 const titleScreen = document.getElementById("titleScreen");
 const game = document.getElementById("game");
 
@@ -13,20 +16,75 @@ const speaker = document.getElementById("speaker");
 const dialogue = document.getElementById("dialogue");
 const choices = document.getElementById("choices");
 
-// Progress
-let currentQuestion = 0;
+// ==========================
+// SAVE DATA
+// ==========================
 
-// Player history
-const player = {
+let saveData = JSON.parse(localStorage.getItem("interviewSave")) || {
 
-    answers: [],
-    effects: []
+    playthroughs: 0,
+    endingsUnlocked: [],
+    achievements: [],
+    lastEnding: null
 
 };
 
-// ================================
+// Change title based on previous playthroughs
+
+const subtitle = document.getElementById("subtitle");
+
+if (saveData.playthroughs >= 10) {
+
+    subtitle.textContent = "I knew you'd return.";
+
+}
+else if (saveData.playthroughs >= 5) {
+
+    subtitle.textContent = "You keep coming back.";
+
+}
+else if (saveData.playthroughs >= 1) {
+
+    subtitle.textContent = "Welcome back.";
+
+}
+
+// ==========================
+// GAME STATE
+// ==========================
+
+let currentQuestion = 0;
+
+// ==========================
+// PLAYER PROFILE
+// ==========================
+
+const player = {
+
+    answers: [],
+
+    stats: {
+
+        honesty: 0,
+        empathy: 0,
+        courage: 0,
+        fear: 0,
+        curiosity: 0,
+        obedience: 0,
+        ambition: 0,
+        morality: 0,
+
+        hope: 0,
+        observation: 0,
+        confidence: 0
+
+    }
+
+};
+
+// ==========================
 // START GAME
-// ================================
+// ==========================
 
 startBtn.addEventListener("click", () => {
 
@@ -38,9 +96,57 @@ startBtn.addEventListener("click", () => {
 
 });
 
-// ================================
+// ==========================
+// ROOM CHANGES
+// ==========================
+
+function updateRoom() {
+
+    const clock = document.getElementById("clock");
+    const windowRoom = document.getElementById("window");
+    const portrait = document.getElementById("portrait");
+    const light = document.getElementById("light");
+    const shadow = document.getElementById("shadow");
+
+    // Curious players notice changes.
+
+    if (player.stats.curiosity >= 5) {
+
+        windowRoom.style.opacity = ".35";
+
+        portrait.style.transform = "rotate(6deg)";
+
+    }
+
+    // Fear darkens the room.
+
+    if (player.stats.fear >= 5) {
+
+        shadow.style.opacity = ".20";
+
+    }
+
+    // Defiant players anger the room.
+
+    if (player.stats.obedience <= -3) {
+
+        light.classList.add("fastFlicker");
+
+    }
+
+    // Time begins to fail.
+
+    if (currentQuestion >= 15) {
+
+        clock.textContent = "--:--";
+
+    }
+
+}
+
+// ==========================
 // SHOW QUESTION
-// ================================
+// ==========================
 
 function showQuestion() {
 
@@ -51,6 +157,8 @@ function showQuestion() {
         return;
 
     }
+
+    updateRoom();
 
     const q = QUESTIONS[currentQuestion];
 
@@ -71,7 +179,18 @@ function showQuestion() {
         button.onclick = () => {
 
             player.answers.push(choice.text);
-            player.effects.push(choice.effect);
+
+            // Apply stat changes
+
+            for (const stat in choice.stats) {
+
+                if (player.stats.hasOwnProperty(stat)) {
+
+                    player.stats[stat] += choice.stats[stat];
+
+                }
+
+            }
 
             currentQuestion++;
 
@@ -85,9 +204,9 @@ function showQuestion() {
 
 }
 
-// ================================
+// ==========================
 // FINISH
-// ================================
+// ==========================
 
 function finishInterview() {
 
@@ -95,10 +214,12 @@ function finishInterview() {
 
         getEnding(player);
 
-    } else {
+    }
+    else {
 
-        dialogue.textContent =
-            "The interview has ended.";
+        speaker.textContent = "Interviewer";
+
+        dialogue.textContent = "The interview has ended.";
 
         choices.innerHTML = "";
 
