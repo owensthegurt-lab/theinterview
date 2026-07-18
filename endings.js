@@ -6,102 +6,179 @@
 const ENDINGS = [
 
 {
+
     id: "perfect_candidate",
 
     title: "The Perfect Candidate",
 
     description:
-    "Every answer fit neatly into a box someone else had prepared long before you arrived. When the interview ended, the interviewer smiled as though he'd finally found what he was looking for. The door opened... but only for one of you.",
+    "You answered with calm certainty and compassion. The interviewer closes the folder, stands, and quietly thanks you for your honesty. The door unlocks, but as you leave, someone else is already waiting outside to take your seat.",
 
-    history: [
-        "You answered calmly.",
-        "You showed mercy when questioned.",
-        "You noticed what others ignored."
+    history:[
+        "You valued honesty.",
+        "You showed empathy.",
+        "You remained composed."
     ],
 
-    requires: [
-        "calm",
-        "mercy",
-        "aware"
-    ]
+    requirements:{
+        honesty:6,
+        empathy:5,
+        courage:2
+    }
+
 },
 
 {
-    id: "hollow_crown",
 
-    title: "The Hollow Crown",
+    id:"hollow_crown",
+
+    title:"The Hollow Crown",
 
     description:
-    "Power came naturally to you, but every answer left the room a little colder. By the time the final question was asked, there was nothing left to rule except silence. Some victories echo longer than kingdoms.",
+    "Every answer pushed you toward power over people. By the end of the interview there is no applause, only silence. You leave with everything you wanted, but nothing worth keeping.",
 
-    history: [
-        "You judged others harshly.",
-        "You embraced difficult choices.",
-        "You valued control over compassion."
+    history:[
+        "Ambition guided your choices.",
+        "Mercy was rarely considered.",
+        "Power mattered most."
     ],
 
-    requires: [
-        "judgment",
-        "erase",
-        "cold"
-    ]
+    requirements:{
+        ambition:6,
+        morality:-2
+    }
+
 },
 
 {
-    id: "unknown",
 
-    title: "The Unknown Applicant",
+    id:"curious_mind",
+
+    title:"The Door Left Open",
 
     description:
-    "The interview ended without certainty. Your answers contradicted one another until even the interviewer hesitated. For the first time, the file on the table remained unfinished.",
+    "You never stopped asking questions. Eventually the interviewer stopped answering them. When the lights returned, the room was empty... except for the chair waiting for someone else.",
 
-    history: [
-        "Your choices never settled into one path.",
-        "You remained unpredictable.",
-        "Even the interviewer couldn't define you."
+    history:[
+        "Curiosity defined your interview.",
+        "You questioned everything.",
+        "Nothing satisfied you."
     ],
 
-    requires: []
+    requirements:{
+        curiosity:7
+    }
+
+},
+
+{
+
+    id:"fearful",
+
+    title:"The Quiet Prison",
+
+    description:
+    "Fear answered before you did. Long after the interview ended, you remained seated, convinced the safest choice was never to move again.",
+
+    history:[
+        "Fear shaped your decisions.",
+        "You avoided unnecessary risks.",
+        "The room became your world."
+    ],
+
+    requirements:{
+        fear:7
+    }
+
+},
+
+{
+
+    id:"unknown",
+
+    title:"Unknown Applicant",
+
+    description:
+    "No pattern ever truly emerged. Your answers contradicted one another until even the interviewer abandoned the report. For the first time in years, the file remained unfinished.",
+
+    history:[
+        "You defied categorization.",
+        "Your personality stayed unpredictable.",
+        "No single ending fit perfectly."
+    ],
+
+    requirements:{}
+
 }
 
 ];
 
 // =====================================
-// PICK ENDING
+// SCORE AN ENDING
+// =====================================
+
+function scoreEnding(player, ending){
+
+    let score = 0;
+
+    for(const stat in ending.requirements){
+
+        const required = ending.requirements[stat];
+        const value = player.stats[stat] || 0;
+
+        if(required >= 0){
+
+            if(value >= required){
+
+                score++;
+
+            }
+
+        }else{
+
+            if(value <= required){
+
+                score++;
+
+            }
+
+        }
+
+    }
+
+    return score;
+
+}
+
+// =====================================
+// PICK BEST ENDING
 // =====================================
 
 function getEnding(player){
 
-    let bestEnding = ENDINGS[ENDINGS.length - 1];
-    let bestScore = -1;
+    let winner = ENDINGS[ENDINGS.length-1];
 
-    ENDINGS.forEach(ending => {
+    let highestScore = -1;
 
-        let score = 0;
+    ENDINGS.forEach(ending=>{
 
-        ending.requires.forEach(requirement => {
+        const score = scoreEnding(player, ending);
 
-            if(player.effects.includes(requirement)){
-                score++;
-            }
+        if(score > highestScore){
 
-        });
-
-        if(score > bestScore){
-
-            bestScore = score;
-            bestEnding = ending;
+            highestScore = score;
+            winner = ending;
 
         }
 
     });
 
-    showEnding(bestEnding);
+    showEnding(winner);
 
 }
 
 // =====================================
-// DISPLAY ENDING
+// SHOW ENDING
 // =====================================
 
 function showEnding(ending){
@@ -110,26 +187,68 @@ function showEnding(ending){
     const dialogue = document.getElementById("dialogue");
     const choices = document.getElementById("choices");
 
-    speaker.textContent = "ENDING";
+    speaker.textContent = "FINAL REPORT";
 
     dialogue.innerHTML = `
-        <h2 style="margin-bottom:15px;">${ending.title}</h2>
 
-        <p style="line-height:1.7;">
-            ${ending.description}
-        </p>
+        <h2>${ending.title}</h2>
 
         <br>
 
-        <h3>History Will Remember</h3>
+        <p>${ending.description}</p>
 
-        <ul style="margin-top:10px; line-height:1.8;">
+        <br>
 
-            ${ending.history.map(item => `<li>${item}</li>`).join("")}
+        <h3>History Will Remember...</h3>
+
+        <ul>
+
+            ${ending.history.map(item=>`<li>${item}</li>`).join("")}
 
         </ul>
+
     `;
 
     choices.innerHTML = "";
+
+    // Save progress
+
+    if(typeof saveData !== "undefined"){
+
+        if(!saveData.endingsUnlocked.includes(ending.id)){
+
+            saveData.endingsUnlocked.push(ending.id);
+
+        }
+
+        saveData.lastEnding = ending.id;
+
+        saveData.playthroughs++;
+
+        localStorage.setItem(
+
+            "interviewSave",
+
+            JSON.stringify(saveData)
+
+        );
+
+    }
+
+    // Restart button
+
+    const restart = document.createElement("button");
+
+    restart.className = "choice";
+
+    restart.textContent = "Play Again";
+
+    restart.onclick = ()=>{
+
+        location.reload();
+
+    };
+
+    choices.appendChild(restart);
 
 }
