@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>The Interview</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
     <!-- Background -->
     <div id="background"></div>
 
-    <!-- Title Screen -->
+    <!-- Screen Fade -->
+    <div id="fade"></div>
+
+    <!-- ========================= -->
+    <!-- TITLE SCREEN -->
+    <!-- ========================= -->
+
     <div id="titleScreen">
 
-        <h1 id="gameTitle">THE INTERVIEW</h1>
+        <h1 id="gameTitle">
+            THE INTERVIEW
+        </h1>
 
         <p id="subtitle">
             Some questions have no right answer.
@@ -27,46 +38,67 @@
 
     </div>
 
-    <!-- Main Game -->
-    <div id="game" class="hidden">
+    <!-- ========================= -->
+    <!-- MAIN GAME -->
+    <!-- ========================= -->
 
-        <!-- Interview Room -->
+    <div id="game" class="hidden">
 
         <div id="room">
 
+            <!-- Ceiling Light -->
+            <div id="light"></div>
+
+            <!-- Clock -->
             <div id="clock">
                 9:00 AM
             </div>
 
-            <div id="light"></div>
-
+            <!-- Window -->
             <div id="window"></div>
 
+            <!-- Portrait -->
+            <div id="portrait"></div>
+
+            <!-- Tape Recorder -->
+            <div id="recorder"></div>
+
+            <!-- Table -->
             <div id="table"></div>
 
+            <!-- Chairs -->
             <div id="chairPlayer"></div>
 
             <div id="chairInterviewer"></div>
 
+            <!-- Shadow Overlay -->
+            <div id="shadow"></div>
+
         </div>
 
-        <!-- Dialogue -->
+        <!-- ========================= -->
+        <!-- DIALOGUE -->
+        <!-- ========================= -->
 
         <div id="dialogueBox">
 
             <div id="speaker">
+
                 Interviewer
+
             </div>
 
             <div id="dialogue">
 
-                ...
+                Good morning.
 
             </div>
 
         </div>
 
-        <!-- Choices -->
+        <!-- ========================= -->
+        <!-- CHOICES -->
+        <!-- ========================= -->
 
         <div id="choices">
 
@@ -74,10 +106,9 @@
 
     </div>
 
-    <!-- Fade -->
-    <div id="fade"></div>
-
-    <!-- Scripts -->
+    <!-- ========================= -->
+    <!-- SCRIPTS -->
+    <!-- ========================= -->
 
     <script src="questions.js"></script>
     <script src="endings.js"></script>
