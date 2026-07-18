@@ -1,107 +1,135 @@
 // =====================================
 // THE INTERVIEW
-// GAME
+// ENDINGS
 // =====================================
 
-// Elements
-const titleScreen = document.getElementById("titleScreen");
-const game = document.getElementById("game");
+const ENDINGS = [
 
-const startBtn = document.getElementById("startBtn");
+{
+    id: "perfect_candidate",
 
-const speaker = document.getElementById("speaker");
-const dialogue = document.getElementById("dialogue");
-const choices = document.getElementById("choices");
+    title: "The Perfect Candidate",
 
-// Progress
-let currentQuestion = 0;
+    description:
+    "Every answer fit neatly into a box someone else had prepared long before you arrived. When the interview ended, the interviewer smiled as though he'd finally found what he was looking for. The door opened... but only for one of you.",
 
-// Player history
-const player = {
+    history: [
+        "You answered calmly.",
+        "You showed mercy when questioned.",
+        "You noticed what others ignored."
+    ],
 
-    answers: [],
-    effects: []
+    requires: [
+        "calm",
+        "mercy",
+        "aware"
+    ]
+},
 
-};
+{
+    id: "hollow_crown",
 
-// ================================
-// START GAME
-// ================================
+    title: "The Hollow Crown",
 
-startBtn.addEventListener("click", () => {
+    description:
+    "Power came naturally to you, but every answer left the room a little colder. By the time the final question was asked, there was nothing left to rule except silence. Some victories echo longer than kingdoms.",
 
-    titleScreen.classList.add("hidden");
+    history: [
+        "You judged others harshly.",
+        "You embraced difficult choices.",
+        "You valued control over compassion."
+    ],
 
-    game.classList.remove("hidden");
+    requires: [
+        "judgment",
+        "erase",
+        "cold"
+    ]
+},
 
-    showQuestion();
+{
+    id: "unknown",
 
-});
+    title: "The Unknown Applicant",
 
-// ================================
-// SHOW QUESTION
-// ================================
+    description:
+    "The interview ended without certainty. Your answers contradicted one another until even the interviewer hesitated. For the first time, the file on the table remained unfinished.",
 
-function showQuestion() {
+    history: [
+        "Your choices never settled into one path.",
+        "You remained unpredictable.",
+        "Even the interviewer couldn't define you."
+    ],
 
-    if (currentQuestion >= QUESTIONS.length) {
+    requires: []
+}
 
-        finishInterview();
+];
 
-        return;
+// =====================================
+// PICK ENDING
+// =====================================
 
-    }
+function getEnding(player){
 
-    const q = QUESTIONS[currentQuestion];
+    let bestEnding = ENDINGS[ENDINGS.length - 1];
+    let bestScore = -1;
 
-    speaker.textContent = q.speaker;
+    ENDINGS.forEach(ending => {
 
-    dialogue.textContent = q.text;
+        let score = 0;
 
-    choices.innerHTML = "";
+        ending.requires.forEach(requirement => {
 
-    q.choices.forEach(choice => {
+            if(player.effects.includes(requirement)){
+                score++;
+            }
 
-        const button = document.createElement("button");
+        });
 
-        button.className = "choice";
+        if(score > bestScore){
 
-        button.textContent = choice.text;
+            bestScore = score;
+            bestEnding = ending;
 
-        button.onclick = () => {
-
-            player.answers.push(choice.text);
-            player.effects.push(choice.effect);
-
-            currentQuestion++;
-
-            showQuestion();
-
-        };
-
-        choices.appendChild(button);
+        }
 
     });
 
+    showEnding(bestEnding);
+
 }
 
-// ================================
-// FINISH
-// ================================
+// =====================================
+// DISPLAY ENDING
+// =====================================
 
-function finishInterview() {
+function showEnding(ending){
 
-    if (typeof getEnding === "function") {
+    const speaker = document.getElementById("speaker");
+    const dialogue = document.getElementById("dialogue");
+    const choices = document.getElementById("choices");
 
-        getEnding(player);
+    speaker.textContent = "ENDING";
 
-    } else {
+    dialogue.innerHTML = `
+        <h2 style="margin-bottom:15px;">${ending.title}</h2>
 
-        dialogue.textContent =
-            "The interview has ended.";
+        <p style="line-height:1.7;">
+            ${ending.description}
+        </p>
 
-        choices.innerHTML = "";
+        <br>
 
-    }
+        <h3>History Will Remember</h3>
+
+        <ul style="margin-top:10px; line-height:1.8;">
+
+            ${ending.history.map(item => `<li>${item}</li>`).join("")}
+
+        </ul>
+    `;
+
+    choices.innerHTML = "";
 
 }
